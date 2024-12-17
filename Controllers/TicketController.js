@@ -1,18 +1,19 @@
 import tickets from '../DB/Ticket.js';
 
+const isUserTypeMatch = (ticketUserType, userType) => ticketUserType === userType;
+const isFilterMatch  = (ticket, filterText) => {
+    return !filterText ? true :
+     (ticket.title.toLowerCase().includes(filterText) ||ticket.description.toLowerCase().includes(filterText))
+}
+
 const TicketController = {
     get: (req, res) => {
         const userType = req.query.userType;
         const filterText = req.query.filter;
         const page = parseInt(req.query.page) || 1;
-        const limit = 8;
-        let filteredTickets = tickets.filter(ticket => {
-            return (!userType || ticket.userType === userType) && ( !filterText || 
-                (
-                    ticket.title.toLowerCase().includes(filterText.toLowerCase()) ||         
-                    ticket.description.toLowerCase().includes(filterText.toLowerCase())
-                )
-            )
+        const limit = Number(req.query.limit) || 10;
+        const filteredTickets = tickets.filter(ticket => {
+            return isUserTypeMatch(ticket.userType, userType) && isFilterMatch(ticket, filterText.toLowerCase())
         });
         
         const startIndex = (page - 1) * limit;
