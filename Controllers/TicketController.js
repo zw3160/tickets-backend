@@ -22,7 +22,6 @@ const TicketController = {
         const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
         
         res.json({ tickets: paginatedTickets, total: filteredTickets.length });
-        
     }
   };
   
